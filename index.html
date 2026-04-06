@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foaie Parcurs Web</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #5b34d6;
+      --primary-dark: #4b28b9;
+      --danger: #b91c1c;
+      --success: #166534;
+      --border: #e5e7eb;
+      --blue: #1d4ed8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .page-title {
+      color: #bfbfbf;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 14px 16px;
+      font-size: 16px;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #60a5fa;
+      outline-offset: 0;
+    }
+
+    button {
+      border: none;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    button.secondary {
+      width: auto;
+      padding: 12px 16px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .inline {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      width: auto;
+      padding: 12px 16px;
+    }
+
+    .muted { color: var(--muted); }
+    .success { color: var(--success); }
+    .danger { color: var(--danger); }
+    .blue { color: var(--blue); }
+    .green { color: #166534; }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .small-note {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .secondary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loginPage">
+      <h1 class="page-title">Login</h1>
+
+      <div class="card">
+        <h2 class="title">Login Foaie Parcurs</h2>
+
+        <div class="stack">
+          <div>
+            <label for="loginUsername">Utilizator</label>
+            <input id="loginUsername" placeholder="bh06pct" />
+          </div>
+
+          <div>
+            <label for="loginPassword">Parola</label>
+            <input id="loginPassword" type="password" placeholder="Introdu parola" />
+          </div>
+
+          <div class="inline">
+            <input id="rememberLogin" type="checkbox" style="width:22px;height:22px;" />
+            <label for="rememberLogin" style="margin:0;">Ține-mă minte</label>
+          </div>
+
+          <button id="loginBtn">Login</button>
+          <div id="loginStatus" class="danger"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="appPage" class="hidden">
+      <h1 class="page-title">Foaie Parcurs</h1>
+
+      <div class="card">
+        <h2 class="title">Foaie Parcurs</h2>
+
+        <div class="tabs">
+          <button class="tab-btn secondary" id="tabFoaieBtn">Tab 1 - Foaie Parcurs</button>
+          <button class="tab-btn secondary" id="tabAdminBtn">Tab 2 - Administrare Mașini</button>
+        </div>
+
+        <div id="foaieSection">
+          <div class="stack">
+            <div>
+              <label for="soferInput">Șofer</label>
+              <input id="soferInput" placeholder="Introdu șoferul" />
+            </div>
+
+            <div>
+              <label for="masinaSelect">Nr Mașină</label>
+              <select id="masinaSelect"></select>
+            </div>
+
+            <div id="consumLabel" class="green">Consum mediu: -</div>
+
+            <div>
+              <label for="dataInput">Data</label>
+              <input id="dataInput" type="date" />
+            </div>
+
+            <div id="dataWarning" class="muted"></div>
+
+            <div>
+              <label for="kmPornireInput">Km Pornire</label>
+              <input id="kmPornireInput" type="number" />
+            </div>
+
+            <div>
+              <label for="kmOprireInput">Km Oprire</label>
+              <input id="kmOprireInput" type="number" />
+            </div>
+
+            <div id="ultimKmLabel" class="danger">Ultimul km salvat: -</div>
+            <div id="kmSourceLabel" class="small-note"></div>
+            <div id="kmWarning" class="danger"></div>
+            <div id="kmParcursiLabel" class="blue">Km parcurși: -</div>
+            <div id="consumEstimatLabel" class="blue">Consum estimat: -</div>
+
+            <div>
+              <label for="destinatieInput">Destinație</label>
+              <input id="destinatieInput" placeholder="Introdu destinația" />
+            </div>
+
+            <button id="saveBtn">Salvează</button>
+
+            <div class="card" style="margin:0;">
+              <div class="section-title">Foaie de parcurs</div>
+
+              <div class="inline">
+                <div style="flex:1; min-width:180px;">
+                  <label for="pdfMonthSelect">Luna</label>
+                  <select id="pdfMonthSelect"></select>
+                </div>
+
+                <div style="flex:1; min-width:180px;">
+                  <label for="pdfYearSelect">Anul</label>
+                  <select id="pdfYearSelect"></select>
+                </div>
+              </div>
+
+              <div class="inline" style="margin-top:12px;">
+                <button class="secondary" id="viewFoaieBtn">Vezi foaia de parcurs</button>
+                <button class="secondary" id="pdfGoogleBtn">Generează PDF foaie de parcurs</button>
+              </div>
+
+              <div class="small-note" style="margin-top:10px;">
+                Foaia de parcurs se generează din datele din Google, pentru luna și anul selectate.
+              </div>
+            </div>
+
+            <div class="inline">
+              <button class="secondary" id="istoricLocalBtn">Vezi istoric local</button>
+              <button class="secondary" id="istoricGoogleBtn">Istoric Google</button>
+            </div>
+
+            <div class="inline">
+              <button class="secondary" id="deschideCsvBtn">Deschide CSV</button>
+              <button class="secondary" id="logoutBtn">Logout</button>
+            </div>
+
+            <div id="saveStatus"></div>
+
+            <div class="card" style="margin:0;">
+              <div class="section-title">Centralizare lunară</div>
+              <div id="centralizareLabel">Nu există încă date pentru centralizare.</div>
+              <div id="serviceAlert" class="danger"></div>
+              <div id="documenteAlert" class="danger"></div>
+            </div>
+
+            <div>
+              <div class="section-title">Istoric curse</div>
+              <div id="istoricGol" class="muted">Nu există încă date salvate.</div>
+
+              <div class="table-wrap hidden" id="istoricTableWrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Șofer</th>
+                      <th>Nr Mașină</th>
+                      <th>Data</th>
+                      <th>Km Pornire</th>
+                      <th>Km Oprire</th>
+                      <th>Km Parcurși</th>
+                      <th>Consum</th>
+                      <th>Estimat</th>
+                      <th>Destinație</th>
+                    </tr>
+                  </thead>
+                  <tbody id="istoricBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="adminSection" class="hidden">
+          <div class="stack">
+            <div class="section-title">Administrare Mașini</div>
+            <div id="userInfoLabel" class="blue"></div>
+
+            <div>
+              <label for="adminMasinaSelect">Selectează mașina</label>
+              <select id="adminMasinaSelect"></select>
+            </div>
+
+            <div class="card" style="margin:0;">
+              <div class="section-title">Dashboard Google</div>
+              <button id="dashboardBtn">Încarcă dashboard</button>
+              <div id="dashboardCurse">Total curse: -</div>
+              <div id="dashboardKm">Total km: -</div>
+              <div id="dashboardMasini">Total mașini: -</div>
+            </div>
+
+            <div>
+              <label for="adminConsum">Consum mediu (L/100 km)</label>
+              <input id="adminConsum" type="number" />
+            </div>
+
+            <div>
+              <label for="adminKmUlei">Km ultim schimb ulei</label>
+              <input id="adminKmUlei" type="number" />
+            </div>
+
+            <div>
+              <label for="adminIntervalUlei">Interval schimb ulei</label>
+              <input id="adminIntervalUlei" type="number" />
+            </div>
+
+            <div>
+              <label for="adminKmRevizie">Km ultima revizie</label>
+              <input id="adminKmRevizie" type="number" />
+            </div>
+
+            <div>
+              <label for="adminIntervalRevizie">Interval revizie</label>
+              <input id="adminIntervalRevizie" type="number" />
+            </div>
+
+            <div>
+              <label for="adminItp">Expirare ITP</label>
+              <input id="adminItp" type="date" />
+            </div>
+
+            <div>
+              <label for="adminAsigurare">Expirare Asigurare</label>
+              <input id="adminAsigurare" type="date" />
+            </div>
+
+            <div>
+              <label for="adminRovinieta">Expirare Rovinietă</label>
+              <input id="adminRovinieta" type="date" />
+            </div>
+
+            <div class="inline">
+              <button class="secondary" id="adminSaveBtn">Salvează date mașină</button>
+              <button class="secondary" id="adminReloadBtn">Încarcă date</button>
+            </div>
+
+            <div class="inline">
+              <button class="secondary" id="resetUleiBtn">Reset ulei</button>
+              <button class="secondary" id="resetRevizieBtn">Reset revizie</button>
+              <button class="secondary" id="resetTestBtn">Reset date test</button>
+            </div>
+
+            <div id="adminStatus"></div>
+
+            <div class="card" style="margin:0;">
+              <div class="section-title">Alerte mașină</div>
+              <div id="adminAlerte" class="danger">Selectează o mașină.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLcYAZNvms4paeqyoc0KWXcKiCtZ_ny9HxJMtryBKJ9MGV1AiOtbI7brjmm_qjXziqkQ/exec';
+
+    const MASINI_DEFAULT = {
+      'BH-06-PCT': 8,
+      'BH-07-DDX': 8,
+      'BH-12-PCT': 8,
+      'BH-18-PCT': 8,
+      'BH-28-PCT': 48,
+      'BH-31-PCT': 7,
+      'BH-34-PCT': 7,
+      'BH-35-PCT': 9,
+      'BH-41-PCT': 7,
+      'BH-42-PCT': 7,
+      'BH-46-PCT': 48,
+      'BH-50-PCT': 7,
+      'BH-51-PCT': 7,
+      'BH-53-PCT': 8,
+      'BH-54-PCT': 7,
+      'BH-55-PCT': 7,
+      'BH-56-PCT': 8,
+      'BH-58-PCT': 7,
+      'BH-64-PCT': 8,
+      'BH-73-PCT': 9,
+      'BH-75-PCT': 8,
+      'BH-76-PCT': 7,
+      'BH-82-PCT': 8,
+      'BH-88-PCT': 7,
+      'BH-92-PCT': 12,
+      'BH-95-PCT': 7,
+      'BH-99-PCT': 8,
+      'SJ-09-ARD': 7
+    };
+
+    const state = {
+      session: {
+        username: '',
+        password: '',
+        numeComplet: '',
+        masina: '',
+        rol: ''
+      },
+      dateMasini: {},
+      istoricLocal: [],
+      istoricCurent: [],
+      istoricGoogle: [],
+      sourceIstoricCurent: 'local',
+      lastKm: {
+        local: null,
+        google: null,
+        chosen: null,
+        chosenSource: null
+      }
+    };
+
+    const el = id => document.getElementById(id);
+
+    function todayIso() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function formatDateRo(dateIso) {
+      if (!dateIso) return '';
+      const [y, m, d] = dateIso.split('-');
+      return `${d}.${m}.${y}`;
+    }
+
+    function isoFromDateRo(text) {
+      if (!text || !text.includes('.')) return todayIso();
+      const [d, m, y] = text.split('.');
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+
+    function parseRoDateToSortableValue(dateText) {
+      if (!dateText) return 0;
+
+      const text = String(dateText).trim();
+
+      if (text.includes('.')) {
+        const [d, m, y] = text.split('.');
+        return Number(`${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`);
+      }
+
+      const parsed = new Date(text);
+      if (!isNaN(parsed)) {
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, '0');
+        const d = String(parsed.getDate()).padStart(2, '0');
+        return Number(`${y}${m}${d}`);
+      }
+
+      return 0;
+    }
+
+    function formatDateForFoaie(dateValue) {
+      if (!dateValue) return '';
+
+      let dt = null;
+
+      if (Object.prototype.toString.call(dateValue) === '[object Date]' && !isNaN(dateValue)) {
+        dt = dateValue;
+      } else {
+        const text = String(dateValue).trim();
+
+        if (text.includes('.')) {
+          const parts = text.split('.');
+          if (parts.length === 3) {
+            const d = Number(parts[0]);
+            const m = Number(parts[1]);
+            const y = Number(parts[2]);
+            dt = new Date(y, m - 1, d);
+          }
+        }
+
+        if (!dt || isNaN(dt)) {
+          const parsed = new Date(text);
+          if (!isNaN(parsed)) {
+            dt = parsed;
+          }
+        }
+      }
+
+      if (!dt || isNaN(dt)) {
+        return String(dateValue);
+      }
+
+      const zile = ['duminică', 'luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă'];
+      const zi = zile[dt.getDay()] || '';
+      const d = String(dt.getDate()).padStart(2, '0');
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const y = dt.getFullYear();
+
+      return `${zi}, ${d}.${m}.${y}`;
+    }
+
+    function sortRowsForPdf(rows) {
+      return [...rows].sort((a, b) => {
+        const da = parseRoDateToSortableValue(a.data);
+        const db = parseRoDateToSortableValue(b.data);
+        if (da !== db) return da - db;
+
+        const kpa = Number(a.kmPornire || 0);
+        const kpb = Number(b.kmPornire || 0);
+        if (kpa !== kpb) return kpa - kpb;
+
+        const koa = Number(a.kmOprire || 0);
+        const kob = Number(b.kmOprire || 0);
+        return koa - kob;
+      });
+    }
+
+    function createDefaultMasina(nr, consum) {
+      const now = new Date();
+      const nextYear = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate())
+        .toISOString()
+        .split('T')[0];
+
+      return {
+        nrMasina: nr,
+        consumMediu: consum,
+        kmUltimSchimbUlei: 0,
+        intervalSchimbUlei: 10000,
+        kmUltimaRevizie: 0,
+        intervalRevizie: 10000,
+        expirareITP: nextYear,
+        expirareAsigurare: nextYear,
+        expirareRovinieta: nextYear
+      };
+    }
+
+    function loadDateMasini() {
+      const raw = localStorage.getItem('dateMasini');
+      if (raw) {
+        try {
+          state.dateMasini = JSON.parse(raw);
+        } catch {
+          state.dateMasini = {};
+        }
+      }
+
+      if (!Object.keys(state.dateMasini).length) {
+        for (const [nr, consum] of Object.entries(MASINI_DEFAULT)) {
+          state.dateMasini[nr] = createDefaultMasina(nr, consum);
+        }
+      } else {
+        for (const [nr, consum] of Object.entries(MASINI_DEFAULT)) {
+          if (!state.dateMasini[nr]) {
+            state.dateMasini[nr] = createDefaultMasina(nr, consum);
+          }
+        }
+      }
+
+      saveDateMasini();
+    }
+
+    function saveDateMasini() {
+      localStorage.setItem('dateMasini', JSON.stringify(state.dateMasini));
+    }
+
+    function loadIstoricLocal() {
+      const raw = localStorage.getItem('curseLocal');
+      if (raw) {
+        try {
+          state.istoricLocal = JSON.parse(raw);
+        } catch {
+          state.istoricLocal = [];
+        }
+      }
+    }
+
+    function saveIstoricLocal() {
+      localStorage.setItem('curseLocal', JSON.stringify(state.istoricLocal));
+    }
+
+    function saveSession(remember) {
+      if (remember) {
+        localStorage.setItem('rememberLogin', 'true');
+        localStorage.setItem('sessionData', JSON.stringify(state.session));
+      } else {
+        localStorage.removeItem('rememberLogin');
+        localStorage.removeItem('sessionData');
+      }
+    }
+
+    function loadRememberedSession() {
+      if (localStorage.getItem('rememberLogin') === 'true') {
+        const raw = localStorage.getItem('sessionData');
+        if (raw) {
+          try {
+            const s = JSON.parse(raw);
+            el('loginUsername').value = s.username || '';
+            el('loginPassword').value = s.password || '';
+            el('rememberLogin').checked = true;
+          } catch {}
+        }
+      }
+    }
+
+    function populatePdfSelectors() {
+      const monthSelect = el('pdfMonthSelect');
+      const yearSelect = el('pdfYearSelect');
+
+      monthSelect.innerHTML = '';
+      yearSelect.innerHTML = '';
+
+      const luni = [
+        'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+        'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'
+      ];
+
+      luni.forEach((luna, index) => {
+        const opt = document.createElement('option');
+        opt.value = String(index + 1);
+        opt.textContent = luna;
+        monthSelect.appendChild(opt);
+      });
+
+      for (let year = 2023; year <= 2030; year++) {
+        const opt = document.createElement('option');
+        opt.value = String(year);
+        opt.textContent = String(year);
+        yearSelect.appendChild(opt);
+      }
+
+      const currentDate = new Date();
+      monthSelect.value = String(currentDate.getMonth() + 1);
+      yearSelect.value = String(currentDate.getFullYear());
+    }
+
+    function getPdfSelectedMonthYear() {
+      const month = Number(el('pdfMonthSelect').value || (new Date().getMonth() + 1));
+      const year = Number(el('pdfYearSelect').value || new Date().getFullYear());
+      return { month, year };
+    }
+
+    async function login() {
+      const username = el('loginUsername').value.trim();
+      const password = el('loginPassword').value.trim();
+
+      el('loginStatus').textContent = '';
+
+      if (!username || !password) {
+        el('loginStatus').textContent = 'Completează user și parolă.';
+        return;
+      }
+
+      try {
+        const url = `${GOOGLE_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.ok) {
+          el('loginStatus').textContent = data.message || 'Login invalid';
+          return;
+        }
+
+        state.session = {
+          username,
+          password,
+          numeComplet: data.numeComplet || '',
+          masina: data.masina || '',
+          rol: data.rol || 'user'
+        };
+
+        saveSession(el('rememberLogin').checked);
+        startApp();
+      } catch {
+        el('loginStatus').textContent = 'Eroare la login.';
+      }
+    }
+
+    function fillMasini() {
+      const masini = Object.keys(state.dateMasini).sort();
+      const selects = [el('masinaSelect'), el('adminMasinaSelect')];
+
+      for (const select of selects) {
+        select.innerHTML = '<option value="">Alege mașina</option>';
+
+        masini.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    function getSelectedMasina() {
+      return el('masinaSelect').value || '';
+    }
+
+    function getMasinaPentruGoogleQueries() {
+      if (state.session.rol === 'admin') {
+        return getSelectedMasina();
+      }
+      return state.session.masina || getSelectedMasina();
+    }
+
+    function getSelectedYearMonth() {
+      const selected = el('dataInput').value || todayIso();
+      return selected.slice(0, 7);
+    }
+
+    function startApp() {
+      el('loginPage').classList.add('hidden');
+      el('appPage').classList.remove('hidden');
+
+      loadDateMasini();
+      loadIstoricLocal();
+      fillMasini();
+      populatePdfSelectors();
+
+      const ultimSoferWeb = localStorage.getItem('ultimSoferWeb') || '';
+      el('soferInput').value = ultimSoferWeb;
+      el('soferInput').placeholder = state.session.numeComplet || 'Introdu șoferul';
+
+      el('dataInput').value = todayIso();
+      el('userInfoLabel').textContent = `User: ${state.session.username} | Rol: ${state.session.rol} | Mașină: ${state.session.masina}`;
+
+      if (state.session.masina && state.dateMasini[state.session.masina]) {
+        el('masinaSelect').value = state.session.masina;
+        el('adminMasinaSelect').value = state.session.masina;
+      }
+
+      if (state.session.rol !== 'admin') {
+        el('masinaSelect').disabled = true;
+        el('adminMasinaSelect').disabled = true;
+      } else {
+        el('masinaSelect').disabled = false;
+        el('adminMasinaSelect').disabled = false;
+      }
+
+      state.sourceIstoricCurent = 'local';
+      updateConsum();
+      recomputeLastKm();
+      fillKmPornireFromBestSource();
+      updateCalc();
+      updateDataWarning();
+      updateCentralizare();
+      loadAdminMasina();
+      loadLocalHistory();
+    }
+
+    function logout() {
+      state.session = {
+        username: '',
+        password: '',
+        numeComplet: '',
+        masina: '',
+        rol: ''
+      };
+
+      state.istoricGoogle = [];
+      state.lastKm = {
+        local: null,
+        google: null,
+        chosen: null,
+        chosenSource: null
+      };
+
+      el('appPage').classList.add('hidden');
+      el('loginPage').classList.remove('hidden');
+    }
+
+    function updateConsum() {
+      const masina = getSelectedMasina();
+      const d = state.dateMasini[masina];
+      el('consumLabel').textContent = d
+        ? `Consum mediu: ${d.consumMediu} L/100 km`
+        : 'Consum mediu: -';
+    }
+
+    function getUltimulKmOprireLocal(masina) {
+      if (!masina) return null;
+      for (let i = state.istoricLocal.length - 1; i >= 0; i--) {
+        const row = state.istoricLocal[i];
+        if (row.nrMasina === masina) return Number(row.kmOprire);
+      }
+      return null;
+    }
+
+    function getUltimulKmOprireGoogle(masina) {
+      if (!masina || !state.istoricGoogle.length) return null;
+
+      let maxKm = null;
+      for (const row of state.istoricGoogle) {
+        if (row.nrMasina !== masina) continue;
+        const km = Number(row.kmOprire);
+        if (!Number.isNaN(km)) {
+          if (maxKm === null || km > maxKm) maxKm = km;
+        }
+      }
+      return maxKm;
+    }
+
+    function recomputeLastKm() {
+      const masina = getSelectedMasina();
+      state.lastKm.local = getUltimulKmOprireLocal(masina);
+      state.lastKm.google = getUltimulKmOprireGoogle(masina);
+
+      if (state.lastKm.google != null) {
+        state.lastKm.chosen = state.lastKm.google;
+        state.lastKm.chosenSource = 'google';
+      } else if (state.lastKm.local != null) {
+        state.lastKm.chosen = state.lastKm.local;
+        state.lastKm.chosenSource = 'local';
+      } else {
+        state.lastKm.chosen = null;
+        state.lastKm.chosenSource = null;
+      }
+
+      updateUltimKm();
+    }
+
+    function updateUltimKm() {
+      const chosen = state.lastKm.chosen;
+      const source = state.lastKm.chosenSource;
+
+      el('ultimKmLabel').textContent = chosen != null
+        ? `Ultimul km salvat: ${chosen}`
+        : 'Ultimul km salvat: -';
+
+      if (source === 'google') {
+        el('kmSourceLabel').textContent =
+          `Sursă curentă km: Google Sheet${state.lastKm.local != null ? ` | Local: ${state.lastKm.local}` : ''}`;
+      } else if (source === 'local') {
+        el('kmSourceLabel').textContent = 'Sursă curentă km: Local';
+      } else {
+        el('kmSourceLabel').textContent = '';
+      }
+    }
+
+    function fillKmPornireFromBestSource() {
+      if (state.lastKm.chosen != null) {
+        el('kmPornireInput').value = String(state.lastKm.chosen);
+      } else {
+        el('kmPornireInput').value = '';
+      }
+      el('kmWarning').textContent = '';
+    }
+
+    function verifyKmPornire() {
+      const masina = getSelectedMasina();
+      const best = state.lastKm.chosen;
+      const kmPornire = Number(el('kmPornireInput').value);
+
+      if (best == null || !el('kmPornireInput').value) {
+        el('kmWarning').textContent = '';
+        return;
+      }
+
+      el('kmWarning').textContent =
+        kmPornire < best
+          ? `Atenție: pentru ${masina}, ultimul km disponibil este ${best}.`
+          : '';
+    }
+
+    function updateCalc() {
+      const kp = Number(el('kmPornireInput').value);
+      const ko = Number(el('kmOprireInput').value);
+      const masina = getSelectedMasina();
+      const d = state.dateMasini[masina];
+
+      if (!el('kmPornireInput').value || !el('kmOprireInput').value || Number.isNaN(kp) || Number.isNaN(ko)) {
+        el('kmParcursiLabel').textContent = 'Km parcurși: -';
+        el('consumEstimatLabel').textContent = 'Consum estimat: -';
+        return;
+      }
+
+      if (ko < kp) {
+        el('kmParcursiLabel').textContent = 'Km parcurși: eroare';
+        el('consumEstimatLabel').textContent = 'Consum estimat: -';
+        return;
+      }
+
+      const km = ko - kp;
+      el('kmParcursiLabel').textContent = `Km parcurși: ${km}`;
+
+      if (d) {
+        const consum = (km * Number(d.consumMediu)) / 100;
+        el('consumEstimatLabel').textContent = `Consum estimat: ${consum.toFixed(2)} L`;
+      } else {
+        el('consumEstimatLabel').textContent = 'Consum estimat: -';
+      }
+    }
+
+    function updateDataWarning() {
+      const today = todayIso();
+      const value = el('dataInput').value;
+
+      if (value > today) {
+        el('dataWarning').textContent = 'Nu poți selecta o dată din viitor.';
+        el('dataWarning').className = 'danger';
+      } else if (value < today) {
+        el('dataWarning').textContent = 'Atenție: ai selectat o dată diferită de data de azi.';
+        el('dataWarning').className = 'muted';
+      } else {
+        el('dataWarning').textContent = '';
+      }
+    }
+
+    function verifyDocument(dateIso, name, alerts) {
+      const today = new Date(todayIso());
+      const date = new Date(dateIso);
+      const days = Math.floor((date - today) / 86400000);
+
+      if (days < 0) alerts.push(`!!! ALERTĂ MARE: ${name.toUpperCase()} EXPIRATĂ la ${date.toLocaleDateString('ro-RO')} !!!`);
+      else if (days === 0) alerts.push(`${name}: expiră ASTĂZI (${date.toLocaleDateString('ro-RO')}).`);
+      else if (days <= 7) alerts.push(`${name}: expiră în ${days} zile (${date.toLocaleDateString('ro-RO')}).`);
+      else if (days <= 30) alerts.push(`${name}: expiră în mai puțin de 30 de zile (${date.toLocaleDateString('ro-RO')}).`);
+    }
+
+    function buildDocAlerts(masina) {
+      const d = state.dateMasini[masina];
+      if (!d) return '';
+
+      const alerts = [];
+      verifyDocument(d.expirareITP, 'ITP', alerts);
+      verifyDocument(d.expirareAsigurare, 'Asigurare', alerts);
+      verifyDocument(d.expirareRovinieta, 'Rovinietă', alerts);
+
+      return alerts.join('\n');
+    }
+
+    function buildKmAlerts(masina) {
+      const d = state.dateMasini[masina];
+      if (!d) return '';
+
+      const ultim = state.lastKm.chosen || 0;
+      const alerts = [];
+
+      const nextOil = Number(d.kmUltimSchimbUlei) + Number(d.intervalSchimbUlei);
+      const remainOil = nextOil - ultim;
+
+      if (Number(d.intervalSchimbUlei) > 0) {
+        if (remainOil <= 0) alerts.push(`ULEI DEPĂȘIT: ${masina} a depășit schimbul de ulei cu ${Math.abs(remainOil)} km.`);
+        else if (remainOil <= 500) alerts.push(`Atenție ulei: pentru ${masina} mai sunt aproximativ ${remainOil} km.`);
+      }
+
+      const nextRev = Number(d.kmUltimaRevizie) + Number(d.intervalRevizie);
+      const remainRev = nextRev - ultim;
+
+      if (Number(d.intervalRevizie) > 0) {
+        if (remainRev <= 0) alerts.push(`REVIZIE DEPĂȘITĂ: ${masina} a depășit revizia cu ${Math.abs(remainRev)} km.`);
+        else if (remainRev <= 500) alerts.push(`Atenție revizie: pentru ${masina} mai sunt aproximativ ${remainRev} km.`);
+      }
+
+      return alerts.join('\n');
+    }
+
+    function calculateSummaryFromRows(rows, masina, yearMonth) {
+      let totalKm = 0;
+      let totalConsum = 0;
+
+      for (const row of rows) {
+        if (row.nrMasina !== masina) continue;
+        const rowYm = isoFromDateRo(row.data).slice(0, 7);
+        if (rowYm !== yearMonth) continue;
+
+        totalKm += Number(row.kmParcursi || 0);
+        totalConsum += Number(row.consumEstimat || 0);
+      }
+
+      return { totalKm, totalConsum };
+    }
+
+    function updateCentralizare() {
+      const masina = getSelectedMasina();
+
+      if (!masina) {
+        el('centralizareLabel').textContent = 'Selectează o mașină pentru centralizare.';
+        el('serviceAlert').textContent = '';
+        el('documenteAlert').textContent = '';
+        return;
+      }
+
+      const yearMonth = getSelectedYearMonth();
+      const [year, month] = yearMonth.split('-');
+      const d = state.dateMasini[masina];
+
+      let totalKm = 0;
+      let totalConsum = 0;
+
+      if (state.sourceIstoricCurent === 'google') {
+        const summary = calculateSummaryFromRows(state.istoricGoogle, masina, yearMonth);
+        totalKm = summary.totalKm;
+        totalConsum = summary.totalConsum;
+      } else {
+        const summary = calculateSummaryFromRows(state.istoricLocal, masina, yearMonth);
+        totalKm = summary.totalKm;
+        totalConsum = summary.totalConsum;
+      }
+
+      const lunaText = new Date(Number(year), Number(month) - 1, 1)
+        .toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' });
+
+      el('centralizareLabel').innerHTML =
+        `Mașină: ${masina}<br>` +
+        `Luna: ${lunaText.charAt(0).toUpperCase() + lunaText.slice(1)}<br>` +
+        `Total km în lună: ${totalKm}<br>` +
+        `Consum mediu: ${d?.consumMediu ?? '-'} L/100 km<br>` +
+        `Consum estimat total: ${totalConsum.toFixed(2)} L`;
+
+      el('serviceAlert').textContent = buildKmAlerts(masina);
+      el('documenteAlert').textContent = buildDocAlerts(masina);
+
+      if (el('adminMasinaSelect').value === masina) {
+        loadAdminMasina();
+      }
+    }
+
+    function chooseKmSourceIfNeeded(localKm, googleKm) {
+      if (googleKm != null && localKm != null && googleKm !== localKm) {
+        const useGoogle = confirm(
+          `Ultimul kilometru din Google Sheet pentru această mașină este ${googleKm}, iar în baza locală este ${localKm}.\n\n` +
+          `Apasă OK pentru a folosi kilometrul din Google Sheet.\n` +
+          `Apasă Cancel pentru a folosi kilometrul local.`
+        );
+        return useGoogle ? { value: googleKm, source: 'google' } : { value: localKm, source: 'local' };
+      }
+
+      if (googleKm != null) return { value: googleKm, source: 'google' };
+      if (localKm != null) return { value: localKm, source: 'local' };
+      return { value: null, source: null };
+    }
+
+    async function saveTrip() {
+      let sofer = el('soferInput').value.trim();
+      const masina = getSelectedMasina();
+      const destinatie = el('destinatieInput').value.trim();
+      const dateIso = el('dataInput').value;
+      const kmPornireInput = Number(el('kmPornireInput').value);
+      const kmOprire = Number(el('kmOprireInput').value);
+
+      if (!sofer) sofer = state.session.numeComplet || '';
+
+      if (!sofer || !masina || !destinatie || !el('kmPornireInput').value || !el('kmOprireInput').value) {
+        el('saveStatus').className = 'danger';
+        el('saveStatus').textContent = 'Completează toate câmpurile.';
+        return;
+      }
+
+      if (dateIso > todayIso()) {
+        el('saveStatus').className = 'danger';
+        el('saveStatus').textContent = 'Nu poți salva cu o dată din viitor.';
+        return;
+      }
+
+      if (Number.isNaN(kmPornireInput) || Number.isNaN(kmOprire)) {
+        el('saveStatus').className = 'danger';
+        el('saveStatus').textContent = 'Valorile de kilometri sunt invalide.';
+        return;
+      }
+
+      const localKm = getUltimulKmOprireLocal(masina);
+      const googleKm = getUltimulKmOprireGoogle(masina);
+      const chosenKm = chooseKmSourceIfNeeded(localKm, googleKm);
+
+      if (chosenKm.value != null && kmPornireInput < chosenKm.value) {
+        const ok = confirm(
+          `Ai introdus Km Pornire = ${kmPornireInput}, dar kilometrul recomandat din ${chosenKm.source === 'google' ? 'Google Sheet' : 'baza locală'} este ${chosenKm.value}.\n\n` +
+          `Vrei să folosesc automat ${chosenKm.value}?`
+        );
+        if (!ok) return;
+        el('kmPornireInput').value = String(chosenKm.value);
+      }
+
+      const kmPornire = Number(el('kmPornireInput').value);
+
+      if (kmOprire < kmPornire) {
+        el('saveStatus').className = 'danger';
+        el('saveStatus').textContent = 'Km oprire nu poate fi mai mic decât km pornire.';
+        return;
+      }
+
+      const d = state.dateMasini[masina];
+      const kmParcursi = kmOprire - kmPornire;
+      const consumMediu = Number(d?.consumMediu || 0);
+      const consumEstimat = ((kmParcursi * consumMediu) / 100).toFixed(2);
+      const dataRo = formatDateRo(dateIso);
+
+      const localRow = {
+        sofer,
+        nrMasina: masina,
+        data: dataRo,
+        kmPornire,
+        kmOprire,
+        kmParcursi,
+        consumMediu,
+        consumEstimat,
+        destinatie
+      };
+
+      localStorage.setItem('ultimSoferWeb', sofer);
+      state.istoricLocal.push(localRow);
+      saveIstoricLocal();
+
+      let googleSaved = true;
+
+      try {
+        const payload = {
+          username: state.session.username,
+          password: state.session.password,
+          sofer,
+          masina,
+          data: dataRo,
+          kmPornire,
+          kmOprire,
+          kmParcursi,
+          consumMediu,
+          consumEstimat,
+          destinatie
+        };
+
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await response.text();
+        let data = null;
+
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = null;
+        }
+
+        if (!response.ok || !data || !data.ok) {
+          googleSaved = false;
+        }
+      } catch {
+        googleSaved = false;
+      }
+
+      if (!googleSaved) {
+        alert('Salvarea locală a reușit, dar trimiterea în Google Sheets a eșuat.');
+      } else {
+        await loadGoogleHistory(true);
+      }
+
+      el('saveStatus').className = 'success';
+      el('saveStatus').textContent = `Salvat: ${kmParcursi} km`;
+
+      el('kmOprireInput').value = '';
+      el('destinatieInput').value = '';
+      el('dataInput').value = todayIso();
+
+      recomputeLastKm();
+      fillKmPornireFromBestSource();
+      updateCalc();
+      updateDataWarning();
+      updateCentralizare();
+
+      if (state.sourceIstoricCurent === 'google') {
+        await loadGoogleHistory(true);
+      } else {
+        loadLocalHistory();
+      }
+    }
+
+    function renderHistory(rows) {
+      state.istoricCurent = rows;
+      const body = el('istoricBody');
+      body.innerHTML = '';
+
+      if (!rows.length) {
+        el('istoricGol').classList.remove('hidden');
+        el('istoricTableWrap').classList.add('hidden');
+        return;
+      }
+
+      el('istoricGol').classList.add('hidden');
+      el('istoricTableWrap').classList.remove('hidden');
+
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.sofer ?? ''}</td>
+          <td>${r.nrMasina ?? ''}</td>
+          <td>${r.data ?? ''}</td>
+          <td>${r.kmPornire ?? ''}</td>
+          <td>${r.kmOprire ?? ''}</td>
+          <td>${r.kmParcursi ?? ''}</td>
+          <td>${r.consumMediu ?? ''}</td>
+          <td>${r.consumEstimat ?? ''}</td>
+          <td>${r.destinatie ?? ''}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function filterRowsForSelectedPeriod(rows, masina, yearMonth) {
+      return rows.filter(r => r.nrMasina === masina && isoFromDateRo(r.data).slice(0, 7) === yearMonth);
+    }
+
+    function loadLocalHistory() {
+      state.sourceIstoricCurent = 'local';
+
+      const masina = getSelectedMasina();
+      const yearMonth = getSelectedYearMonth();
+
+      const rows = filterRowsForSelectedPeriod(state.istoricLocal, masina, yearMonth);
+      renderHistory(rows);
+
+      el('istoricGol').textContent = rows.length
+        ? ''
+        : 'Nu există curse pentru mașina și luna selectată.';
+
+      recomputeLastKm();
+      updateCentralizare();
+    }
+
+    async function loadGoogleHistory(silent = false) {
+      try {
+        const date = new Date(el('dataInput').value || todayIso());
+        const masina = state.session.rol === 'admin'
+          ? getSelectedMasina()
+          : state.session.masina;
+
+        const url = `${GOOGLE_SCRIPT_URL}?action=history&username=${encodeURIComponent(state.session.username)}&password=${encodeURIComponent(state.session.password)}&month=${date.getMonth() + 1}&year=${date.getFullYear()}&masina=${encodeURIComponent(masina)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.ok) {
+          if (!silent) alert(data.message || data.error || 'Nu am putut încărca istoricul Google.');
+          return;
+        }
+
+        state.istoricGoogle = (data.rows || []).map(r => ({
+          sofer: r.sofer ?? '',
+          nrMasina: r.nrMasina ?? '',
+          data: r.data ?? '',
+          kmPornire: r.kmPornire ?? '',
+          kmOprire: r.kmOprire ?? '',
+          kmParcursi: r.kmParcursi ?? '',
+          consumMediu: r.consumMediu ?? '',
+          consumEstimat: r.consumEstimat ?? '',
+          destinatie: r.destinatie ?? ''
+        }));
+
+        state.sourceIstoricCurent = 'google';
+        renderHistory(state.istoricGoogle);
+
+        el('istoricGol').textContent = state.istoricGoogle.length
+          ? ''
+          : 'Nu există curse în Google pentru perioada selectată.';
+
+        recomputeLastKm();
+        updateCentralizare();
+      } catch {
+        if (!silent) alert('Eroare la încărcarea istoricului Google.');
+      }
+    }
+
+    async function loadDashboard() {
+      try {
+        const date = new Date(el('dataInput').value || todayIso());
+        const masina = state.session.rol === 'admin'
+          ? getSelectedMasina()
+          : state.session.masina;
+
+        const url = `${GOOGLE_SCRIPT_URL}?action=dashboard&username=${encodeURIComponent(state.session.username)}&password=${encodeURIComponent(state.session.password)}&month=${date.getMonth() + 1}&year=${date.getFullYear()}&masina=${encodeURIComponent(masina)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.ok) {
+          alert(data.message || data.error || 'Nu am putut încărca dashboard-ul.');
+          return;
+        }
+
+        el('dashboardCurse').textContent = `Total curse: ${data.totalCurse}`;
+        el('dashboardKm').textContent = `Total km: ${data.totalKm}`;
+        el('dashboardMasini').textContent = `Total mașini: ${data.totalMasini}`;
+      } catch {
+        alert('Eroare la încărcarea dashboard-ului.');
+      }
+    }
+
+    async function fetchGoogleHistoryForPdf(month, year) {
+      const masina = getMasinaPentruGoogleQueries();
+
+      if (!masina) {
+        alert('Selectează o mașină.');
+        return [];
+      }
+
+      try {
+        const url = `${GOOGLE_SCRIPT_URL}?action=history&username=${encodeURIComponent(state.session.username)}&password=${encodeURIComponent(state.session.password)}&month=${month}&year=${year}&masina=${encodeURIComponent(masina)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.ok) {
+          alert(data.message || data.error || 'Nu am putut încărca foaia de parcurs din Google.');
+          return [];
+        }
+
+        return sortRowsForPdf((data.rows || []).map(r => ({
+          sofer: r.sofer ?? '',
+          nrMasina: r.nrMasina ?? '',
+          data: r.data ?? '',
+          kmPornire: r.kmPornire ?? '',
+          kmOprire: r.kmOprire ?? '',
+          kmParcursi: r.kmParcursi ?? '',
+          consumMediu: r.consumMediu ?? '',
+          consumEstimat: r.consumEstimat ?? '',
+          destinatie: r.destinatie ?? ''
+        })));
+      } catch {
+        alert('Eroare la încărcarea foii de parcurs din Google.');
+        return [];
+      }
+    }
+
+    function openFoaieWindow(rows, month, year, autoPrint) {
+      const masina = getMasinaPentruGoogleQueries();
+
+      if (!masina) {
+        alert('Selectează o mașină.');
+        return;
+      }
+
+      if (!rows.length) {
+        alert('Nu există curse pentru luna și anul selectate.');
+        return;
+      }
+
+      const lunaText = new Date(Number(year), Number(month) - 1, 1)
+        .toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' });
+
+      const sofer = el('soferInput').value.trim() || state.session.numeComplet || '';
+      const totalKm = rows.reduce((sum, r) => sum + (Number(r.kmParcursi) || 0), 0);
+
+      const tableRows = rows.map(r => `
+        <tr>
+          <td>${escapeHtml(formatDateForFoaie(r.data))}</td>
+          <td>${escapeHtml(r.kmPornire)}</td>
+          <td>${escapeHtml(r.destinatie)}</td>
+          <td>${escapeHtml(r.kmParcursi)}</td>
+          <td>${escapeHtml(r.kmOprire)}</td>
+        </tr>
+      `).join('');
+
+      const printScript = autoPrint
+        ? '<scr' + 'ipt>' +
+          'window.onload=function(){setTimeout(function(){window.print();},300);};' +
+          '</scr' + 'ipt>'
+        : '';
+
+      const html = `
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Foaie de parcurs</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 24px;
+      color: #111;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .info-table, .main-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+
+    .info-table td,
+    .main-table th,
+    .main-table td {
+      border: 1px solid #333;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .main-table th {
+      background: #efefef;
+      text-align: left;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .signatures {
+      margin-top: 36px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      font-size: 14px;
+    }
+
+    .source-note {
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    @media print {
+      body {
+        margin: 14mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="title">FOAIE DE PARCURS</div>
+
+  <div class="source-note">Sursă: Google</div>
+
+  <table class="info-table">
+    <tr>
+      <td><strong>Conducător auto:</strong> ${escapeHtml(sofer)}</td>
+      <td><strong>Număr mașină:</strong> ${escapeHtml(masina)}</td>
+    </tr>
+    <tr>
+      <td><strong>Luna:</strong> ${escapeHtml(lunaText)}</td>
+      <td><strong>Generat la:</strong> ${new Date().toLocaleString('ro-RO')}</td>
+    </tr>
+  </table>
+
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Km bord pornire</th>
+        <th>Destinația deplasării</th>
+        <th>Km efectuat</th>
+        <th>Km bord oprire</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${tableRows}
+    </tbody>
+  </table>
+
+  <div class="footer">TOTAL KM: ${totalKm}</div>
+
+  <div class="signatures">
+    <div>Semnătura conducătorului auto: ____________________</div>
+    <div>Verificat: ____________________</div>
+  </div>
+
+  ${printScript}
+</body>
+</html>`;
+
+      const win = window.open('', '_blank');
+      if (!win) {
+        alert('Browserul a blocat fereastra. Permite popup-urile.');
+        return;
+      }
+
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+    }
+
+    async function viewFoaieParcurs() {
+      const { month, year } = getPdfSelectedMonthYear();
+      const rows = await fetchGoogleHistoryForPdf(month, year);
+      openFoaieWindow(rows, month, year, false);
+    }
+
+    async function generatePrintablePdfGooglePage() {
+      const { month, year } = getPdfSelectedMonthYear();
+      const rows = await fetchGoogleHistoryForPdf(month, year);
+      openFoaieWindow(rows, month, year, true);
+    }
+
+    function loadAdminMasina() {
+      const masina = el('adminMasinaSelect').value;
+      const d = state.dateMasini[masina];
+
+      if (!d) {
+        el('adminAlerte').textContent = 'Selectează o mașină.';
+        return;
+      }
+
+      el('adminConsum').value = d.consumMediu;
+      el('adminKmUlei').value = d.kmUltimSchimbUlei;
+      el('adminIntervalUlei').value = d.intervalSchimbUlei;
+      el('adminKmRevizie').value = d.kmUltimaRevizie;
+      el('adminIntervalRevizie').value = d.intervalRevizie;
+      el('adminItp').value = d.expirareITP;
+      el('adminAsigurare').value = d.expirareAsigurare;
+      el('adminRovinieta').value = d.expirareRovinieta;
+
+      el('adminAlerte').textContent =
+        buildKmAlerts(masina) ||
+        buildDocAlerts(masina) ||
+        'Nu există alerte pentru această mașină.';
+    }
+
+    function saveAdminMasina() {
+      const masina = el('adminMasinaSelect').value;
+
+      if (!masina || !state.dateMasini[masina]) {
+        el('adminStatus').className = 'danger';
+        el('adminStatus').textContent = 'Selectează o mașină.';
+        return;
+      }
+
+      state.dateMasini[masina] = {
+        nrMasina: masina,
+        consumMediu: Number(el('adminConsum').value || 0),
+        kmUltimSchimbUlei: Number(el('adminKmUlei').value || 0),
+        intervalSchimbUlei: Number(el('adminIntervalUlei').value || 0),
+        kmUltimaRevizie: Number(el('adminKmRevizie').value || 0),
+        intervalRevizie: Number(el('adminIntervalRevizie').value || 0),
+        expirareITP: el('adminItp').value || todayIso(),
+        expirareAsigurare: el('adminAsigurare').value || todayIso(),
+        expirareRovinieta: el('adminRovinieta').value || todayIso()
+      };
+
+      saveDateMasini();
+
+      el('adminStatus').className = 'success';
+      el('adminStatus').textContent = 'Datele mașinii au fost salvate.';
+
+      updateConsum();
+      updateCentralizare();
+      loadAdminMasina();
+    }
+
+    function resetUlei() {
+      const masina = el('adminMasinaSelect').value;
+      if (!masina || !state.dateMasini[masina]) return;
+
+      state.dateMasini[masina].kmUltimSchimbUlei = state.lastKm.chosen || 0;
+      saveDateMasini();
+      loadAdminMasina();
+      updateCentralizare();
+
+      el('adminStatus').className = 'success';
+      el('adminStatus').textContent =
+        `Schimbul de ulei a fost resetat la km ${state.dateMasini[masina].kmUltimSchimbUlei}.`;
+    }
+
+    function resetRevizie() {
+      const masina = el('adminMasinaSelect').value;
+      if (!masina || !state.dateMasini[masina]) return;
+
+      state.dateMasini[masina].kmUltimaRevizie = state.lastKm.chosen || 0;
+      saveDateMasini();
+      loadAdminMasina();
+      updateCentralizare();
+
+      el('adminStatus').className = 'success';
+      el('adminStatus').textContent =
+        `Revizia a fost resetată la km ${state.dateMasini[masina].kmUltimaRevizie}.`;
+    }
+
+    async function resetTestData() {
+      if (state.session.rol !== 'admin') {
+        alert('Doar admin poate șterge datele de test.');
+        return;
+      }
+
+      const confirm1 = confirm(
+        'Sigur vrei să ștergi toate datele de test din Google Sheet (tab-ul Curse)?\n\nUsers NU va fi șters.'
+      );
+
+      if (!confirm1) return;
+
+      const confirm2 = confirm(
+        'Vrei să șterg și datele locale din browser?\n\n' +
+        '- istoric local\n' +
+        '- date mașini locale\n' +
+        '- ultim șofer memorat\n' +
+        '- login memorat'
+      );
+
+      try {
+        const payload = {
+          action: 'resettest',
+          username: state.session.username,
+          password: state.session.password
+        };
+
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await response.text();
+        let data = null;
+
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = null;
+        }
+
+        if (!response.ok || !data || !data.ok) {
+          alert((data && (data.message || data.error)) || 'Nu am putut șterge datele de test din Google Sheet.');
+          return;
+        }
+
+        if (confirm2) {
+          localStorage.removeItem('dateMasini');
+          localStorage.removeItem('curseLocal');
+          localStorage.removeItem('ultimSoferWeb');
+          localStorage.removeItem('sessionData');
+          localStorage.removeItem('rememberLogin');
+
+          state.istoricLocal = [];
+          state.istoricGoogle = [];
+          state.istoricCurent = [];
+          state.lastKm = {
+            local: null,
+            google: null,
+            chosen: null,
+            chosenSource: null
+          };
+
+          loadDateMasini();
+          fillMasini();
+          populatePdfSelectors();
+
+          if (state.session.masina && state.dateMasini[state.session.masina]) {
+            el('masinaSelect').value = state.session.masina;
+            el('adminMasinaSelect').value = state.session.masina;
+          }
+
+          el('soferInput').value = '';
+        }
+
+        alert('Datele de test au fost șterse.');
+
+        state.istoricGoogle = [];
+        state.istoricCurent = [];
+        state.sourceIstoricCurent = 'local';
+
+        renderHistory([]);
+        el('istoricGol').textContent = 'Nu există încă date salvate.';
+
+        recomputeLastKm();
+        fillKmPornireFromBestSource();
+        updateCalc();
+        updateDataWarning();
+        updateCentralizare();
+        loadAdminMasina();
+
+      } catch {
+        alert('Eroare la resetarea datelor de test.');
+      }
+    }
+
+    function switchTab(tab) {
+      el('foaieSection').classList.toggle('hidden', tab !== 'foaie');
+      el('adminSection').classList.toggle('hidden', tab !== 'admin');
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    function escapeCsv(value) {
+      const text = String(value ?? '');
+      if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+        return '"' + text.replaceAll('"', '""') + '"';
+      }
+      return text;
+    }
+
+    function downloadBlob(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function getRowsForExport() {
+      return state.istoricCurent || [];
+    }
+
+    function generateCsv() {
+      const rows = getRowsForExport();
+      if (!rows.length) {
+        alert('Nu există date de exportat în CSV.');
+        return;
+      }
+
+      const masina = getSelectedMasina() || 'toate';
+      const ym = getSelectedYearMonth().replace('-', '_');
+      const source = state.sourceIstoricCurent === 'google' ? 'google' : 'local';
+
+      const header = [
+        'Sofer',
+        'NrMasina',
+        'Data',
+        'KmPornire',
+        'KmOprire',
+        'KmParcursi',
+        'ConsumMediu',
+        'ConsumEstimat',
+        'Destinatie'
+      ];
+
+      const lines = [header.join(',')];
+
+      for (const row of rows) {
+        lines.push([
+          escapeCsv(row.sofer),
+          escapeCsv(row.nrMasina),
+          escapeCsv(row.data),
+          escapeCsv(row.kmPornire),
+          escapeCsv(row.kmOprire),
+          escapeCsv(row.kmParcursi),
+          escapeCsv(row.consumMediu),
+          escapeCsv(row.consumEstimat),
+          escapeCsv(row.destinatie)
+        ].join(','));
+      }
+
+      downloadBlob(
+        `FoaieParcurs_${masina}_${ym}_${source}.csv`,
+        lines.join('\r\n'),
+        'text/csv;charset=utf-8'
+      );
+    }
+
+    function onMasinaChanged() {
+      el('adminMasinaSelect').value = el('masinaSelect').value;
+      updateConsum();
+      recomputeLastKm();
+      fillKmPornireFromBestSource();
+      updateCalc();
+      updateCentralizare();
+      loadAdminMasina();
+
+      if (state.sourceIstoricCurent === 'google') {
+        loadGoogleHistory(true);
+      } else {
+        loadLocalHistory();
+      }
+    }
+
+    function bindEvents() {
+      el('loginBtn').addEventListener('click', login);
+      el('logoutBtn').addEventListener('click', logout);
+
+      el('tabFoaieBtn').addEventListener('click', () => switchTab('foaie'));
+      el('tabAdminBtn').addEventListener('click', () => switchTab('admin'));
+
+      el('masinaSelect').addEventListener('change', onMasinaChanged);
+
+      el('adminMasinaSelect').addEventListener('change', () => {
+        el('masinaSelect').value = el('adminMasinaSelect').value;
+        onMasinaChanged();
+      });
+
+      el('kmPornireInput').addEventListener('input', () => {
+        verifyKmPornire();
+        updateCalc();
+      });
+
+      el('kmOprireInput').addEventListener('input', updateCalc);
+
+      el('dataInput').addEventListener('change', () => {
+        updateDataWarning();
+        if (state.sourceIstoricCurent === 'google') {
+          loadGoogleHistory(true);
+        } else {
+          loadLocalHistory();
+        }
+      });
+
+      el('saveBtn').addEventListener('click', saveTrip);
+      el('istoricLocalBtn').addEventListener('click', loadLocalHistory);
+      el('istoricGoogleBtn').addEventListener('click', () => loadGoogleHistory(false));
+      el('dashboardBtn').addEventListener('click', loadDashboard);
+      el('adminSaveBtn').addEventListener('click', saveAdminMasina);
+      el('adminReloadBtn').addEventListener('click', loadAdminMasina);
+      el('resetUleiBtn').addEventListener('click', resetUlei);
+      el('resetRevizieBtn').addEventListener('click', resetRevizie);
+      el('resetTestBtn').addEventListener('click', resetTestData);
+      el('deschideCsvBtn').addEventListener('click', generateCsv);
+      el('viewFoaieBtn').addEventListener('click', viewFoaieParcurs);
+      el('pdfGoogleBtn').addEventListener('click', generatePrintablePdfGooglePage);
+    }
+
+    bindEvents();
+    loadRememberedSession();
+  </script>
+</body>
+</html>
